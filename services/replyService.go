@@ -9,7 +9,7 @@ import (
 
 type ReplyService interface {
 	Create(comment *domain.Reply) error
-	FindAllRepliesByResourceId(id primitive.ObjectID, username string) (*[]domain.Reply, error)
+	FindAllRepliesByResourceId(id primitive.ObjectID, username string, page string) (*[]domain.Reply, error)
 	UpdateById(id primitive.ObjectID, newContent string, edited bool, updatedTime time.Time, username string) error
 	LikeReplyById(primitive.ObjectID, string) error
 	DisLikeReplyById(primitive.ObjectID, string) error
@@ -28,8 +28,8 @@ func (r DefaultReplyService) Create(reply *domain.Reply) error {
 	return nil
 }
 
-func (r DefaultReplyService) FindAllRepliesByResourceId(id primitive.ObjectID,  username string) (*[]domain.Reply, error) {
-	comment, err := r.repo.FindAllRepliesByResourceId(id, username)
+func (r DefaultReplyService) FindAllRepliesByResourceId(id primitive.ObjectID,  username string, page string) (*[]domain.Reply, error) {
+	comment, err := r.repo.FindAllRepliesByResourceId(id, username, page)
 	if err != nil {
 		return nil, err
 	}

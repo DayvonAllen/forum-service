@@ -47,11 +47,17 @@ func (t ThreadRepoImpl) FindAll(page string, ctx context.Context) (*[]domain.Thr
 	return &t.threadPreviewList, nil
 }
 
-func (t ThreadRepoImpl) FindByName(threadName string, username string) (*domain.Thread, error) {
+func (t ThreadRepoImpl) FindByName(threadName string, username string, page string) (*domain.Thread, error) {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
 	err := conn.ThreadsCollection.FindOne(context.TODO(), bson.D{{"name", threadName}}).Decode(&t.thread)
+
+	if err != nil {
+		return nil, err
+	}
+
+	t.thread.Posts, err = PostRepoImpl{}.FindAllPostsByResourceId(t.thread.Id, username, page)
 
 	if err != nil {
 		return nil, err

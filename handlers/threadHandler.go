@@ -54,7 +54,9 @@ func (th *ThreadHandler) GetThreadByName(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"status": "error", "message": "error...", "data": fmt.Sprintf("%v", err)})
 	}
 
-	thread, err := th.ThreadService.FindByName(strings.ToUpper(threadDto.Name), u.Username)
+	page := c.Query("page", "1")
+
+	thread, err := th.ThreadService.FindByName(strings.ToUpper(threadDto.Name), u.Username, page)
 
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "error...", "data": fmt.Sprintf("%v", err)})

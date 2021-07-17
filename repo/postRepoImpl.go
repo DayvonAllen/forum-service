@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readconcern"
 	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 	"log"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -35,7 +36,14 @@ func (p PostRepoImpl) Create(post *domain.Post) error {
 		return fmt.Errorf("resource not found")
 	}
 
+	// todo use session
 	_, err = conn.PostsCollection.InsertOne(context.TODO(), &post)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = conn.ThreadsCollection.UpdateOne(context.TODO(), bson.D{{"_id", thread.Id}}, bson.D{{"$inc", bson.D{{"numberOfPosts", 1}}}})
 
 	if err != nil {
 		return err
@@ -58,11 +66,21 @@ func (p PostRepoImpl) Create(post *domain.Post) error {
 	return nil
 }
 
-func (p PostRepoImpl) FindAllPostsByResourceId(id primitive.ObjectID, username string) (*[]domain.Post, error) {
+func (p PostRepoImpl) FindAllPostsByResourceId(id primitive.ObjectID, username string, page string) ([]domain.Post, error) {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
-	cur, err := conn.ThreadsCollection.Find(context.TODO(), bson.D{{"resourceId", id}})
+	findOptions := options.FindOptions{}
+	perPage := 10
+	pageNumber, err := strconv.Atoi(page)
+
+	if err != nil {
+		return nil, fmt.Errorf("page must be a number")
+	}
+	findOptions.SetSkip((int64(pageNumber) - 1) * int64(perPage))
+	findOptions.SetLimit(int64(perPage))
+
+	cur, err := conn.PostsCollection.Find(context.TODO(), bson.D{{"resourceId", id}}, &findOptions)
 
 	if err != nil {
 		// ErrNoDocuments means that the filter did not match any documents in the collection
@@ -102,7 +120,7 @@ func (p PostRepoImpl) FindAllPostsByResourceId(id primitive.ObjectID, username s
 		go func() {
 			defer wg.Done()
 
-			replies, err := ReplyRepoImpl{}.FindAllRepliesByResourceId(v.Id, username)
+			replies, err := ReplyRepoImpl{}.FindAllRepliesByResourceId(v.Id, username, page)
 
 			v.Replies = replies
 
@@ -116,7 +134,7 @@ func (p PostRepoImpl) FindAllPostsByResourceId(id primitive.ObjectID, username s
 
 		comments = append(comments, v)
 	}
-	return &comments, nil
+	return comments, nil
 }
 
 func (p PostRepoImpl) UpdateById(id primitive.ObjectID, newContent string, edited bool, updatedTime time.Time, username string) error {

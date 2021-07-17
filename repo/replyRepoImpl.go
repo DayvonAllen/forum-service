@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readconcern"
 	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -56,11 +57,21 @@ func (r ReplyRepoImpl) Create(reply *domain.Reply) error {
 	return nil
 }
 
-func (r ReplyRepoImpl) FindAllRepliesByResourceId(resourceID primitive.ObjectID, username string) (*[]domain.Reply, error) {
+func (r ReplyRepoImpl) FindAllRepliesByResourceId(resourceID primitive.ObjectID, username string, page string) (*[]domain.Reply, error) {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
-	cur, err := conn.RepliesCollection.Find(context.TODO(), bson.D{{"resourceId", resourceID}})
+	findOptions := options.FindOptions{}
+	perPage := 10
+	pageNumber, err := strconv.Atoi(page)
+
+	if err != nil {
+		return nil, fmt.Errorf("page must be a number")
+	}
+	findOptions.SetSkip((int64(pageNumber) - 1) * int64(perPage))
+	findOptions.SetLimit(int64(perPage))
+
+	cur, err := conn.RepliesCollection.Find(context.TODO(), bson.D{{"resourceId", resourceID}}, &findOptions)
 
 	if err != nil {
 		// ErrNoDocuments means that the filter did not match any documents in the collection

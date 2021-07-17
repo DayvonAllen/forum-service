@@ -9,7 +9,7 @@ import (
 
 type PostService interface {
 	Create(post *domain.Post) error
-	FindAllPostsByResourceId(id primitive.ObjectID,  username string) (*[]domain.Post, error)
+	FindAllPostsByResourceId(id primitive.ObjectID,  username string, page string) ([]domain.Post, error)
 	UpdateById(id primitive.ObjectID, newContent string, edited bool, updatedTime time.Time, username string) error
 	LikePostById(primitive.ObjectID, string) error
 	DisLikePostById(primitive.ObjectID, string) error
@@ -28,12 +28,12 @@ func (c DefaultPostService) Create(post *domain.Post) error {
 	return nil
 }
 
-func (c DefaultPostService) FindAllPostsByResourceId(id primitive.ObjectID,  username string) (*[]domain.Post, error) {
-	comment, err := c.repo.FindAllPostsByResourceId(id, username)
+func (c DefaultPostService) FindAllPostsByResourceId(id primitive.ObjectID,  username string, page string) ([]domain.Post, error) {
+	posts, err := c.repo.FindAllPostsByResourceId(id, username, page)
 	if err != nil {
 		return nil, err
 	}
-	return comment, nil
+	return posts, nil
 }
 
 func (c DefaultPostService) UpdateById(id primitive.ObjectID, newContent string, edited bool, updatedTime time.Time, username string) error {
