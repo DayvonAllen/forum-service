@@ -13,7 +13,7 @@ type Thread struct {
 	Posts []Post				`bson:"posts" json:"posts"`
 	NumberOfPosts int			`bson:"numberOfPosts" json:"numberOfPosts"`
 	Score int					`bson:"score" json:"score"`
-	Mods []User					`bson:"mods" json:"mods"`
+	Mods []string					`bson:"mods" json:"mods"`
 	Banned []string				`bson:"banned" json:"banned"`
 	CreatedAt   time.Time		`bson:"createdAt" json:"-"`
 	UpdatedAt   time.Time		`bson:"updatedAt" json:"-"`

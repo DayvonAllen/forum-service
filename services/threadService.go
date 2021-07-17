@@ -9,7 +9,7 @@ import (
 
 type ThreadService interface {
 	GetAllThreads(string, context.Context) (*domain.Forum, error)
-	Create(thread *domain.CreateThreadDto) error
+	Create(thread *domain.Thread) error
 	DeleteByID(primitive.ObjectID, string) error
 }
 
@@ -25,7 +25,7 @@ func (s DefaultThreadService) GetAllThreads(page string, ctx context.Context) (*
 	return  u, nil
 }
 
-func (s DefaultThreadService) Create(thread *domain.CreateThreadDto) error {
+func (s DefaultThreadService) Create(thread *domain.Thread) error {
 	err := s.repo.Create(thread)
 	if err != nil {
 		return err
