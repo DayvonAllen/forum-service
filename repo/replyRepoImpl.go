@@ -21,7 +21,7 @@ type ReplyRepoImpl struct {
 	ReplyList []domain.Reply
 }
 
-func (r ReplyRepoImpl) Create(reply *domain.CreateReply) error {
+func (r ReplyRepoImpl) Create(reply *domain.Reply) error {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 

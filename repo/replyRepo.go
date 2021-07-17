@@ -7,7 +7,7 @@ import (
 )
 
 type ReplyRepo interface {
-	Create(reply *domain.CreateReply) error
+	Create(reply *domain.Reply) error
 	FindAllRepliesByResourceId(id primitive.ObjectID, username string) (*[]domain.Reply, error)
 	UpdateById(id primitive.ObjectID, newContent string, edited bool, updatedTime time.Time, username string) error
 	LikeReplyById(primitive.ObjectID, string) error

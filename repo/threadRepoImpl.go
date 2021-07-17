@@ -48,7 +48,7 @@ func (t ThreadRepoImpl) FindAll(page string, ctx context.Context) (*domain.Forum
 	return t.forum, nil
 }
 
-func (t ThreadRepoImpl) Create(thread *domain.CreateThreadDto) error {
+func (t ThreadRepoImpl) Create(thread *domain.Thread) error {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 

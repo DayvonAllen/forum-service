@@ -24,7 +24,5 @@ type Reply struct {
 }
 
 type CreateReply struct {
-	ResourceId     primitive.ObjectID `bson:"resourceId" json:"-"`
 	Content        string             `bson:"content" json:"content"`
-	AuthorUsername string             `bson:"authorUsername" json:"-"`
 }

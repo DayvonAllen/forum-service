@@ -7,7 +7,7 @@ import (
 )
 
 type PostRepo interface {
-	Create(reply *domain.CreatePost) error
+	Create(reply *domain.Post) error
 	FindAllPostsByResourceId(id primitive.ObjectID, username string) (*[]domain.Post, error)
 	UpdateById(id primitive.ObjectID, newContent string, edited bool, updatedTime time.Time, username string) error
 	LikePostById(primitive.ObjectID, string) error

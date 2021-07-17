@@ -23,7 +23,7 @@ type PostRepoImpl struct {
 	Posts []domain.Post
 }
 
-func (p PostRepoImpl) Create(post *domain.CreatePost) error {
+func (p PostRepoImpl) Create(post *domain.Post) error {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
