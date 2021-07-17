@@ -34,3 +34,7 @@ type ThreadPreview struct {
 	CreatedAt   time.Time		`bson:"createdAt" json:"-"`
 	UpdatedAt   time.Time		`bson:"updatedAt" json:"-"`
 }
+
+type FindThreadDto struct {
+	Name  string				`bson:"name" json:"name"`
+}

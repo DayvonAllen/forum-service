@@ -13,9 +13,9 @@ import (
 )
 
 type ThreadRepoImpl struct {
-	forum domain.Forum
-	thread domain.Thread
-	threadList []domain.Thread
+	forum             domain.Forum
+	thread            domain.Thread
+	threadList        []domain.Thread
 	threadPreviewList []domain.ThreadPreview
 }
 
@@ -47,6 +47,33 @@ func (t ThreadRepoImpl) FindAll(page string, ctx context.Context) (*[]domain.Thr
 	return &t.threadPreviewList, nil
 }
 
+func (t ThreadRepoImpl) FindByName(threadName string, username string) (*domain.Thread, error) {
+	conn := database.MongoConnectionPool.Get().(*database.Connection)
+	defer database.MongoConnectionPool.Put(conn)
+
+	err := conn.ThreadsCollection.FindOne(context.TODO(), bson.D{{"name", threadName}}).Decode(&t.thread)
+
+	if err != nil {
+		return nil, err
+	}
+
+	go func() {
+		event := new(domain.Event)
+		event.Action = "view thread"
+		event.Target = t.thread.Id.String()
+		event.ResourceId = t.thread.Id
+		event.ActorUsername = username
+		event.Message = username + " viewed a thread"
+		err = SendEventMessage(event, 0)
+		if err != nil {
+			fmt.Println("Error publishing...")
+			return
+		}
+	}()
+
+	return &t.thread, nil
+}
+
 func (t ThreadRepoImpl) Create(thread *domain.Thread) error {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
@@ -64,6 +91,20 @@ func (t ThreadRepoImpl) Create(thread *domain.Thread) error {
 			return fmt.Errorf("error processing data")
 		}
 
+		go func() {
+			event := new(domain.Event)
+			event.Action = "create thread"
+			event.Target = thread.Id.String()
+			event.ResourceId = thread.Id
+			event.ActorUsername = thread.OwnerUsername
+			event.Message = thread.OwnerUsername + " created a thread"
+			err = SendEventMessage(event, 0)
+			if err != nil {
+				fmt.Println("Error publishing...")
+				return
+			}
+		}()
+
 		return nil
 	}
 
@@ -80,6 +121,20 @@ func (t ThreadRepoImpl) DeleteByID(id primitive.ObjectID, username string) error
 		return err
 	}
 
+	go func() {
+		event := new(domain.Event)
+		event.Action = "delete thread"
+		event.Target = id.String()
+		event.ResourceId = id
+		event.ActorUsername = username
+		event.Message = username + " deleted a thread"
+		err = SendEventMessage(event, 0)
+		if err != nil {
+			fmt.Println("Error publishing...")
+			return
+		}
+	}()
+
 	return nil
 }
 
@@ -88,4 +143,3 @@ func NewThreadRepoImpl() ThreadRepoImpl {
 
 	return threadRepoImpl
 }
-

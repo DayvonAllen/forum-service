@@ -25,8 +25,6 @@ func (th *ThreadHandler) GetAllThreads(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{"status": "error", "message": "error...", "data": "Unauthorized user"})
 	}
 
-	fmt.Println("auth")
-
 	page := c.Query("page", "1")
 
 	threads, err := th.ThreadService.GetAllThreads(page, c.Context())
@@ -37,6 +35,34 @@ func (th *ThreadHandler) GetAllThreads(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{"status": "success", "message": "success", "data": *threads})
 }
+
+func (th *ThreadHandler) GetThreadByName(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	var auth domain.Authentication
+	u, loggedIn, err := auth.IsLoggedIn(token)
+
+	if err != nil || loggedIn == false {
+		return c.Status(401).JSON(fiber.Map{"status": "error", "message": "error...", "data": "Unauthorized user"})
+	}
+
+	threadDto := new(domain.FindThreadDto)
+
+	err = c.BodyParser(threadDto)
+
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"status": "error", "message": "error...", "data": fmt.Sprintf("%v", err)})
+	}
+
+	thread, err := th.ThreadService.FindByName(strings.ToUpper(threadDto.Name), u.Username)
+
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "error...", "data": fmt.Sprintf("%v", err)})
+	}
+
+	return c.Status(200).JSON(fiber.Map{"status": "success", "message": "success", "data": *thread})
+}
+
 
 func (th *ThreadHandler) CreateThread(c *fiber.Ctx) error {
 	token := c.Get("Authorization")

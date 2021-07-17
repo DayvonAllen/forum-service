@@ -9,6 +9,7 @@ import (
 
 type ThreadService interface {
 	GetAllThreads(string, context.Context) (*[]domain.ThreadPreview, error)
+	FindByName(string, string) (*domain.Thread, error)
 	Create(thread *domain.Thread) error
 	DeleteByID(primitive.ObjectID, string) error
 }
@@ -24,6 +25,15 @@ func (s DefaultThreadService) GetAllThreads(page string, ctx context.Context) (*
 	}
 	return  u, nil
 }
+
+func (s DefaultThreadService) FindByName(threadName string, username string) (*domain.Thread, error) {
+	u, err := s.repo.FindByName(threadName, username)
+	if err != nil {
+		return nil, err
+	}
+	return  u, nil
+}
+
 
 func (s DefaultThreadService) Create(thread *domain.Thread) error {
 	err := s.repo.Create(thread)

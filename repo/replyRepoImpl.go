@@ -4,7 +4,7 @@ import (
 	"context"
 	"example.com/app/database"
 	"example.com/app/domain"
-	"example.com/app/helper"
+	"example.com/app/helpers"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -83,9 +83,9 @@ func (r ReplyRepoImpl) FindAllRepliesByResourceId(resourceID primitive.ObjectID,
 
 	replies := make([]domain.Reply, 0, len(r.ReplyList))
 	for _, v := range r.ReplyList {
-		v.CurrentUserLiked = helper.CurrentUserInteraction(v.Likes, username)
+		v.CurrentUserLiked = helpers.CurrentUserInteraction(v.Likes, username)
 		if !v.CurrentUserLiked {
-			v.CurrentUserDisLiked = helper.CurrentUserInteraction(v.Dislikes, username)
+			v.CurrentUserDisLiked = helpers.CurrentUserInteraction(v.Dislikes, username)
 		}
 		replies = append(replies, v)
 	}

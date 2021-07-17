@@ -19,6 +19,7 @@ func SetupRoutes(app *fiber.App) {
 	api := app.Group("", logger.New())
 
 	threads := api.Group("/threads")
+	threads.Get("/name", th.GetThreadByName)
 	threads.Get("/", th.GetAllThreads)
 	threads.Post("/",  th.CreateThread)
 	threads.Delete("/delete", th.DeleteByID)

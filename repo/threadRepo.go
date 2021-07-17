@@ -8,6 +8,7 @@ import (
 
 type ThreadRepo interface {
 	FindAll(string, context.Context) (*[]domain.ThreadPreview, error)
+	FindByName(string, string) (*domain.Thread, error)
 	Create(thread *domain.Thread) error
 	DeleteByID(primitive.ObjectID, string) error
 }

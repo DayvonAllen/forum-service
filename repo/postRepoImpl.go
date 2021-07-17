@@ -4,7 +4,7 @@ import (
 	"context"
 	"example.com/app/database"
 	"example.com/app/domain"
-	"example.com/app/helper"
+	"example.com/app/helpers"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -91,9 +91,9 @@ func (p PostRepoImpl) FindAllPostsByResourceId(id primitive.ObjectID, username s
 		go func() {
 			defer wg.Done()
 
-			v.CurrentUserLiked = helper.CurrentUserInteraction(v.Likes, username)
+			v.CurrentUserLiked = helpers.CurrentUserInteraction(v.Likes, username)
 			if !v.CurrentUserLiked {
-				v.CurrentUserDisLiked = helper.CurrentUserInteraction(v.Dislikes, username)
+				v.CurrentUserDisLiked = helpers.CurrentUserInteraction(v.Dislikes, username)
 			}
 
 			return
