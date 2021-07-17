@@ -12,14 +12,15 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
-	uh := handlers.UserHandler{UserService: services.NewUserService(repo.NewUserRepoImpl())}
+	th := handlers.ThreadHandler{ThreadService: services.NewThreadService(repo.NewThreadRepoImpl())}
 
 	app.Use(recover.New())
 	api := app.Group("", logger.New())
 
-	user := api.Group("application/storage/app/users")
-	user.Get("/", middleware.IsLoggedIn, uh.GetAllUsers)
-	user.Delete("/delete",middleware.IsLoggedIn,  uh.DeleteByID)
+	threads := api.Group("/threads")
+	threads.Get("/", middleware.IsLoggedIn, th.GetAllThreads)
+	threads.Post("/",  th.CreateThread)
+	threads.Delete("/delete", th.DeleteByID)
 }
 
 func Setup() *fiber.App {

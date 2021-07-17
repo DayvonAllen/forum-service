@@ -11,6 +11,9 @@ import (
 type Connection struct {
 	*mongo.Client
 	UserCollection *mongo.Collection
+	ThreadCollection *mongo.Collection
+	PostCollection *mongo.Collection
+	ReplyCollection *mongo.Collection
 	*mongo.Database
 }
 
@@ -30,8 +33,11 @@ func ConnectToDB() (*Connection,error) {
 
 	// create collection
 	userCollection := db.Collection("users")
+	threadCollection := db.Collection("threads")
+	postCollection := db.Collection("posts")
+	replyCollection := db.Collection("replies")
 
-	dbConnection := &Connection{client, userCollection, db}
+	dbConnection := &Connection{client, userCollection,threadCollection,postCollection, replyCollection, db}
 
 	return dbConnection, nil
 }
