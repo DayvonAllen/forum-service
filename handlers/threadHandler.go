@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"strings"
 	"time"
 )
 
@@ -41,14 +42,13 @@ func (th *ThreadHandler) CreateThread(c *fiber.Ctx) error {
 
 	err = c.BodyParser(threadDto)
 
-	threadDto.OwnerUsername = u.Username
-
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"status": "error", "message": "error...", "data": fmt.Sprintf("%v", err)})
 	}
 
 	thread := new(domain.Thread)
-	thread.Name = threadDto.Name
+	thread.Name = strings.ToUpper(threadDto.Name)
+	thread.OwnerUsername = u.Username
 	thread.Description = threadDto.Description
 	thread.Id = primitive.NewObjectID()
 	thread.Posts = make([]domain.Post, 0, 0)

@@ -68,7 +68,7 @@ func (t ThreadRepoImpl) Create(thread *domain.Thread) error {
 		return nil
 	}
 
-	return fmt.Errorf("thread with that name already exists")
+	return fmt.Errorf("thread with that name already exists, thread names must be unique")
 }
 
 func (t ThreadRepoImpl) DeleteByID(id primitive.ObjectID, username string) error {
