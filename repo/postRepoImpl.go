@@ -138,7 +138,7 @@ func (p PostRepoImpl) UpdateById(id primitive.ObjectID, newContent string, edite
 	return nil
 }
 
-func (p PostRepoImpl) LikeCommentById(postId primitive.ObjectID, username string) error {
+func (p PostRepoImpl) LikePostById(postId primitive.ObjectID, username string) error {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
@@ -228,7 +228,7 @@ func (p PostRepoImpl) LikeCommentById(postId primitive.ObjectID, username string
 	return nil
 }
 
-func (p PostRepoImpl) DisLikeCommentById(postId primitive.ObjectID, username string) error {
+func (p PostRepoImpl) DisLikePostById(postId primitive.ObjectID, username string) error {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 

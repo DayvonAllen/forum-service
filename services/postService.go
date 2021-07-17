@@ -11,8 +11,8 @@ type PostService interface {
 	Create(post *domain.Post) error
 	FindAllPostsByResourceId(id primitive.ObjectID,  username string) (*[]domain.Post, error)
 	UpdateById(id primitive.ObjectID, newContent string, edited bool, updatedTime time.Time, username string) error
-	LikeCommentById(primitive.ObjectID, string) error
-	DisLikeCommentById(primitive.ObjectID, string) error
+	LikePostById(primitive.ObjectID, string) error
+	DisLikePostById(primitive.ObjectID, string) error
 	DeleteById(id primitive.ObjectID, username string) error
 }
 
@@ -44,7 +44,7 @@ func (c DefaultPostService) UpdateById(id primitive.ObjectID, newContent string,
 	return nil
 }
 
-func (c DefaultPostService) LikeCommentById(id primitive.ObjectID, username string) error {
+func (c DefaultPostService) LikePostById(id primitive.ObjectID, username string) error {
 	err := c.repo.LikePostById(id, username)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (c DefaultPostService) LikeCommentById(id primitive.ObjectID, username stri
 	return nil
 }
 
-func (c DefaultPostService) DisLikeCommentById(id primitive.ObjectID, username string) error {
+func (c DefaultPostService) DisLikePostById(id primitive.ObjectID, username string) error {
 	err := c.repo.DisLikePostById(id, username)
 	if err != nil {
 		return err
