@@ -16,15 +16,26 @@ type ThreadHandler struct {
 }
 
 func (th *ThreadHandler) GetAllThreads(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	var auth domain.Authentication
+	_, loggedIn, err := auth.IsLoggedIn(token)
+
+	if err != nil || loggedIn == false {
+		return c.Status(401).JSON(fiber.Map{"status": "error", "message": "error...", "data": "Unauthorized user"})
+	}
+
+	fmt.Println("auth")
+
 	page := c.Query("page", "1")
 
-	users, err := th.ThreadService.GetAllThreads(page, c.Context())
+	threads, err := th.ThreadService.GetAllThreads(page, c.Context())
 
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "error...", "data": fmt.Sprintf("%v", err)})
 	}
 
-	return c.Status(200).JSON(fiber.Map{"status": "success", "message": "success", "data": users})
+	return c.Status(200).JSON(fiber.Map{"status": "success", "message": "success", "data": *threads})
 }
 
 func (th *ThreadHandler) CreateThread(c *fiber.Ctx) error {

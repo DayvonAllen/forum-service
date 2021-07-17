@@ -13,12 +13,13 @@ import (
 )
 
 type ThreadRepoImpl struct {
-	forum *domain.Forum
-	thread *domain.Thread
-	threadList *[]domain.Thread
+	forum domain.Forum
+	thread domain.Thread
+	threadList []domain.Thread
+	threadPreviewList []domain.ThreadPreview
 }
 
-func (t ThreadRepoImpl) FindAll(page string, ctx context.Context) (*domain.Forum, error) {
+func (t ThreadRepoImpl) FindAll(page string, ctx context.Context) (*[]domain.ThreadPreview, error) {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
@@ -39,13 +40,11 @@ func (t ThreadRepoImpl) FindAll(page string, ctx context.Context) (*domain.Forum
 		return nil, err
 	}
 
-	if err = cur.All(ctx, t.threadList); err != nil {
+	if err = cur.All(ctx, &t.threadPreviewList); err != nil {
 		log.Fatal(err)
 	}
 
-	t.forum.Threads = t.threadList
-
-	return t.forum, nil
+	return &t.threadPreviewList, nil
 }
 
 func (t ThreadRepoImpl) Create(thread *domain.Thread) error {

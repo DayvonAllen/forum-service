@@ -8,7 +8,7 @@ import (
 )
 
 type ThreadService interface {
-	GetAllThreads(string, context.Context) (*domain.Forum, error)
+	GetAllThreads(string, context.Context) (*[]domain.ThreadPreview, error)
 	Create(thread *domain.Thread) error
 	DeleteByID(primitive.ObjectID, string) error
 }
@@ -17,7 +17,7 @@ type DefaultThreadService struct {
 	repo repo.ThreadRepo
 }
 
-func (s DefaultThreadService) GetAllThreads(page string, ctx context.Context) (*domain.Forum, error) {
+func (s DefaultThreadService) GetAllThreads(page string, ctx context.Context) (*[]domain.ThreadPreview, error) {
 	u, err := s.repo.FindAll(page, ctx)
 	if err != nil {
 		return nil, err

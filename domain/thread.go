@@ -24,3 +24,12 @@ type CreateThreadDto struct {
 	Name  string				`bson:"name" json:"name"`
 	Description string			`bson:"description" json:"description"`
 }
+
+type ThreadPreview struct {
+	Id primitive.ObjectID 		`bson:"_id" json:"-"`
+	Name  string				`bson:"name" json:"name"`
+	Description string			`bson:"description" json:"description"`
+	NumberOfPosts int			`bson:"numberOfPosts" json:"numberOfPosts"`
+	CreatedAt   time.Time		`bson:"createdAt" json:"-"`
+	UpdatedAt   time.Time		`bson:"updatedAt" json:"-"`
+}

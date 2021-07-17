@@ -59,7 +59,6 @@ func (rh *ReplyHandler) CreateReply(c *fiber.Ctx) error {
 
 func (rh *ReplyHandler) UpdateById(c *fiber.Ctx) error {
 	c.Accepts("application/json")
-	c.Accepts("application/json")
 	token := c.Get("Authorization")
 
 	var auth domain.Authentication
