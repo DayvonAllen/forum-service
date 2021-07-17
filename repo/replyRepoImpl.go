@@ -28,7 +28,7 @@ func (r ReplyRepoImpl) Create(reply *domain.Reply) error {
 
 	replyObj := new(domain.Reply)
 
-	err := conn.RepliesCollection.FindOne(context.TODO(), bson.D{{"_id", reply.ResourceId}}).Decode(&replyObj)
+	err := conn.PostsCollection.FindOne(context.TODO(), bson.D{{"_id", reply.ResourceId}}).Decode(&replyObj)
 
 	if err != nil {
 		return fmt.Errorf("resource not found")
