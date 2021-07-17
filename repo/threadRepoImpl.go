@@ -33,7 +33,7 @@ func (t ThreadRepoImpl) FindAll(page string, ctx context.Context) (*domain.Forum
 	findOptions.SetLimit(int64(perPage))
 
 	// Get all users
-	cur, err := conn.ThreadCollection.Find(ctx, bson.M{}, &findOptions)
+	cur, err := conn.ThreadsCollection.Find(ctx, bson.M{}, &findOptions)
 
 	if err != nil {
 		return nil, err
@@ -52,14 +52,14 @@ func (t ThreadRepoImpl) Create(thread *domain.CreateThreadDto) error {
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
-	cur, err := conn.ThreadCollection.Find(context.TODO(), bson.D{{"name", thread.Name}})
+	cur, err := conn.ThreadsCollection.Find(context.TODO(), bson.D{{"name", thread.Name}})
 
 	if err != nil {
 		return fmt.Errorf("error processing data")
 	}
 
 	if !cur.Next(context.TODO()) {
-		_, err = conn.ThreadCollection.InsertOne(context.TODO(), thread)
+		_, err = conn.ThreadsCollection.InsertOne(context.TODO(), thread)
 
 		if err != nil {
 			return fmt.Errorf("error processing data")
@@ -75,7 +75,7 @@ func (t ThreadRepoImpl) DeleteByID(id primitive.ObjectID, username string) error
 	conn := database.MongoConnectionPool.Get().(*database.Connection)
 	defer database.MongoConnectionPool.Put(conn)
 
-	_, err := conn.ThreadCollection.DeleteOne(context.TODO(), bson.D{{"_id", id}, {"ownerUsername", username}})
+	_, err := conn.ThreadsCollection.DeleteOne(context.TODO(), bson.D{{"_id", id}, {"ownerUsername", username}})
 
 	if err != nil {
 		return err

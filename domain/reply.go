@@ -6,15 +6,25 @@ import (
 )
 
 type Reply struct {
-	Id             primitive.ObjectID `bson:"_id" json:"id"`
+	Id                  primitive.ObjectID `bson:"_id" json:"id"`
 	ResourceId 			primitive.ObjectID `bson:"resourceId" json:"-"`
-	AuthorUsername string			   `bson:"authorUsername" json:"authorUsername"`
-	Content		string					`bson:"content" json:"content"`
-	Edited 		bool					`bson:"edited" json:"edited"`
-	Likes          []string           `bson:"likes" json:"-"`
-	Dislikes       []string           `bson:"dislikes" json:"-"`
-	LikeCount      int                `bson:"likeCount" json:"-"`
-	DislikeCount   int                `bson:"dislikeCount" json:"-"`
-	CreatedAt      time.Time          `bson:"createdAt" json:"-"`
-	UpdatedAt      time.Time          `bson:"updatedAt" json:"-"`
+	Content             string             `bson:"content" json:"content"`
+	AuthorUsername      string             `bson:"authorUsername" json:"authorUsername"`
+	Likes          		[]string           `bson:"likes" json:"-"`
+	Dislikes       		[]string           `bson:"dislikes" json:"-"`
+	LikeCount           int                `bson:"likeCount" json:"likeCount"`
+	DislikeCount        int                `bson:"dislikeCount" json:"dislikeCount"`
+	Edited              bool               `bson:"edited" json:"edited"`
+	CurrentUserLiked    bool               `bson:"-" json:"currentUserLiked"`
+	CurrentUserDisLiked bool               `bson:"-" json:"currentUserDisLiked"`
+	CreatedAt           time.Time          `bson:"createdAt" json:"createdAt"`
+	UpdatedAt           time.Time          `bson:"updatedAt" json:"updatedAt"`
+	CreatedDate         string             `bson:"createdDate" json:"createdDate"`
+	UpdatedDate         string             `bson:"updatedDate" json:"updatedDate"`
+}
+
+type CreateReply struct {
+	ResourceId     primitive.ObjectID `bson:"resourceId" json:"-"`
+	Content        string             `bson:"content" json:"content"`
+	AuthorUsername string             `bson:"authorUsername" json:"-"`
 }

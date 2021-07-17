@@ -5,5 +5,6 @@ package domain
 type Message struct {
 	User         User   `form:"User" json:"User"`
 	MessageType  int    `form:"messageType" json:"messageType"`
+	Event        Event  `form:"Event" json:"Event"`
 	ResourceType string `form:"resourceType" json:"resourceType"`
 }
