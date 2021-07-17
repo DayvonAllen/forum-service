@@ -15,6 +15,7 @@ type Thread struct {
 	Score int					`bson:"score" json:"score"`
 	Mods []string					`bson:"mods" json:"mods"`
 	Banned []string				`bson:"banned" json:"banned"`
+	DisableModRequest bool		`bson:"disableModRequest" json:"disableModRequest"`
 	CreatedAt   time.Time		`bson:"createdAt" json:"-"`
 	UpdatedAt   time.Time		`bson:"updatedAt" json:"-"`
 }
