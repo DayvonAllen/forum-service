@@ -19,8 +19,8 @@ type Reply struct {
 	CurrentUserDisLiked bool               `bson:"-" json:"currentUserDisLiked"`
 	CreatedAt           time.Time          `bson:"createdAt" json:"createdAt"`
 	UpdatedAt           time.Time          `bson:"updatedAt" json:"updatedAt"`
-	CreatedDate         string             `bson:"createdDate" json:"createdDate"`
-	UpdatedDate         string             `bson:"updatedDate" json:"updatedDate"`
+	CreatedDate         string             `bson:"createdDate" json:"-"`
+	UpdatedDate         string             `bson:"updatedDate" json:"-"`
 }
 
 type CreateReply struct {
